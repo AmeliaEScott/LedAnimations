@@ -1,0 +1,58 @@
+from constants import *
+from neopixel import *
+import random
+import math
+
+#Min and max duration, in ticks. (30 tick/sec I guess)
+starMinDuration = 15
+starMaxDuration = 300
+
+class Stars(object):
+    
+    theStars=[]
+    
+    class Star(object):
+        
+        def __init__(self, parent, red, green, blue):
+            
+            self.loc = int(random.random() * LED_COUNT)
+            done = 0
+            while(not(done)):
+                self.loc = int(random.random() * LED_COUNT)
+                done = 1
+                for star in parent.theStars:
+                    if(star.loc == self.loc):
+                        done = 0
+            self.curTime = 0
+            self.duration = int(random.random() * (starMaxDuration - starMinDuration)) + starMinDuration
+            self.red = red
+            self.green = green
+            self.blue = blue
+
+    def __init__(self, strip, starCount, brightness, red, green, blue):
+        self.strip = strip
+        self.starCount = starCount
+        self.brightness = brightness
+        for i in range(starCount):
+            self.theStars.append(self.Star(self, red, green, blue))
+        self.red = red
+        self.green = green
+        self.blue = blue
+        
+    def animate(self):
+        toRemove = []
+        for star in self.theStars:
+            if(star.curTime > star.duration):
+                toRemove.append(star)
+            else:
+                brightness = math.sin((star.curTime / float(star.duration)) * math.pi)
+                brightness = brightness * self.brightness
+                #print str(brightness)
+                star.curTime += 1
+                self.strip.setPixelColor(star.loc, Color(int(brightness*star.red), int(brightness*star.green), int(brightness*star.blue)))
+        for star in toRemove:
+            self.theStars.remove(star)
+            self.theStars.append(self.Star(self, self.red, self.green, self.blue))
+                
+
+    
