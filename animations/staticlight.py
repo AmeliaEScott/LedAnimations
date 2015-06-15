@@ -1,4 +1,4 @@
-from neopixel import *
+from ledstrip import NeoPixelWithAlpha
 from constants import *
 
 class StaticLight:
@@ -12,5 +12,5 @@ class StaticLight:
     def animate(self):
         color = int(self.brightness * 255)
         for i in range(self.start, self.end):
-            self.strip.setPixelColor(i, Color(color, color, color))
+            self.strip.setPixelColorWithAlpha(i, color, color, color, 1)
 

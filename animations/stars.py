@@ -28,6 +28,9 @@ class Stars(object):
             self.red = red
             self.green = green
             self.blue = blue
+            #self.red = int(random.random() * 255)
+            #self.green = int(random.random() * 255)
+            #self.blue = int(random.random() * 255)
 
     def __init__(self, strip, starCount, brightness, red, green, blue):
         self.strip = strip
@@ -49,7 +52,7 @@ class Stars(object):
                 brightness = brightness * self.brightness
                 #print str(brightness)
                 star.curTime += 1
-                self.strip.setPixelColor(star.loc, Color(int(brightness*star.red), int(brightness*star.green), int(brightness*star.blue)))
+                self.strip.setPixelColorWithAlpha(star.loc, star.red, star.green, star.blue, brightness)
         for star in toRemove:
             self.theStars.remove(star)
             self.theStars.append(self.Star(self, self.red, self.green, self.blue))
