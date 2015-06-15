@@ -1,7 +1,8 @@
 from stars import Stars
 from staticlight import StaticLight
 from constants import *
-from ledstrip import NeoPixelWithAlpha
+#from ledstrip import NeoPixelWithAlpha
+from neopixel import *
 import time
 
 print LED_COUNT
@@ -10,18 +11,18 @@ print LED_COUNT
 ticks = 0
 
 # Create NeoPixel object with appropriate configuration.
-strip = NeoPixelWithAlpha(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
 # Intialize the library (must be called once before other functions).
 strip.begin()
 
-stars = Stars(strip, 30, 1, 255, 0, 0)
+stars = Stars(strip, 30, 1, 100, 255, 100)
 #150-225
 light = StaticLight(strip, 1, 150, 225)
 absoluteStart = time.time()
 
 while 1:
     start = time.time()
-    light.animate()
+    #light.animate()
     stars.animate()
     #light.animate()
     strip.show()

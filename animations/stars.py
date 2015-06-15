@@ -52,7 +52,8 @@ class Stars(object):
                 brightness = brightness * self.brightness
                 #print str(brightness)
                 star.curTime += 1
-                self.strip.setPixelColorWithAlpha(star.loc, star.red, star.green, star.blue, brightness)
+                #self.strip.setPixelColorWithAlpha(star.loc, star.red, star.green, star.blue, brightness)
+                self.strip.setPixelColor(star.loc, Color(int(star.red * brightness), int(star.green * brightness), int(star.blue * brightness)))
         for star in toRemove:
             self.theStars.remove(star)
             self.theStars.append(self.Star(self, self.red, self.green, self.blue))
