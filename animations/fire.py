@@ -12,11 +12,10 @@ COLOR_EXPONENT = 1
 
 class Fire(object):
     
-    colorFlicker = []
-    brightnessFlicker = []
-    tick = 0
-
     def __init__(self, strip, maxBrightness, center, minStandDev, maxStandDev):
+        self.colorFlicker = []
+        self.brightnessFlicker = []
+        self.tick = 0
         self.strip = strip
         self.maxBrightness = maxBrightness
         self.center = center
@@ -32,14 +31,11 @@ class Fire(object):
             brightnessFlickers.append(random.random())
             brightnessSum += brightnessFlickers[i]
         for i in range(0, NUM_COSINES):
-            colorFlickers[i] = colorFlickers[i] / (colorSum * 2.0)
-            brightnessFlickers[i] = brightnessFlickers[i] / (brightnessSum * 2.0)
+            colorFlickers[i] = colorFlickers[i] / (colorSum * 2)
+            brightnessFlickers[i] = brightnessFlickers[i] / (brightnessSum * 2)
         for i in range(0, NUM_COSINES):
             self.colorFlicker.append([colorFlickers[i], random.random()])
-            print colorFlickers[i]
             self.brightnessFlicker.append([brightnessFlickers[i], random.random()])
-        print " "
-
     def animate(self):
         self.tick += 1
         tick = self.tick
@@ -56,5 +52,5 @@ class Fire(object):
             for flicker in self.colorFlicker:
                 color += flicker[0] * math.cos(flicker[1] * FLICKER_SPEED * (self.tick - timeDiff))
             color = color**COLOR_EXPONENT
-            #self.strip.setPixelColor(self.center + i, Color(int(brightness * 255), int(brightness * color * 70), 0))
-            #self.strip.setPixelColor(self.center - i, Color(int(brightness * 255), int(brightness * color * 70), 0))
+            self.strip.setPixelColor(self.center + i, Color(int(brightness * 255), int(brightness * color * 170), 0))
+            self.strip.setPixelColor(self.center - i, Color(int(brightness * 255), int(brightness * color * 170), 0))
