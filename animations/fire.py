@@ -3,12 +3,14 @@ from neopixel import *
 import random
 import math
 
-NUM_COSINES = 4
+NUM_COSINES = 6
 FLICKER_SPEED = 0.6
 PROPAGATION_SPEED = 3.7
-BRIGHTNESS_FLICKER_SPEED = 0.3
+BRIGHTNESS_FLICKER_SPEED = 0.6
 BRIGHTNESS_EXPONENT = 4.5
-COLOR_EXPONENT = 1
+COLOR_EXPONENT = 0.7
+MIN_GREEN = 30
+MAX_GREEN = 100
 
 class Fire(object):
     
@@ -48,9 +50,12 @@ class Fire(object):
         for i in range(0, int(self.maxStandDev * 3)):
             timeDiff = i / PROPAGATION_SPEED
             brightness = self.maxBrightness * math.exp(-(i * i) / (2 * standDev * standDev))
+            #brightness = brightness * math.exp(-(i * i) / (2 * standDev * standDev))
             color = 0.5
             for flicker in self.colorFlicker:
                 color += flicker[0] * math.cos(flicker[1] * FLICKER_SPEED * (self.tick - timeDiff))
             color = color**COLOR_EXPONENT
-            self.strip.setPixelColor(self.center + i, Color(int(brightness * 255), int(brightness * color * 170), 0))
-            self.strip.setPixelColor(self.center - i, Color(int(brightness * 255), int(brightness * color * 170), 0))
+            red = int(brightness * 255)
+            green = int(brightness * (MIN_GREEN + color * (MAX_GREEN - MIN_GREEN)))
+            self.strip.setPixelColor(self.center + i, Color(red, green, 0))
+            self.strip.setPixelColor(self.center - i, Color(red, green, 0))
