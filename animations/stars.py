@@ -4,8 +4,8 @@ import random
 import math
 
 #Min and max duration, in ticks. (30 tick/sec I guess)
-starMinDuration = 15
-starMaxDuration = 300
+starMinDuration = 30
+starMaxDuration = 150
 
 class Stars(object):
     

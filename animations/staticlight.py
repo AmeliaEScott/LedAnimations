@@ -4,14 +4,15 @@ from constants import *
 
 class StaticLight:
     
-    def __init__(self, strip, brightness, start, end):
+    def __init__(self, strip, start, end, red, green, blue):
         self.strip = strip
-        self.brightness = brightness
         self.start = start
         self.end = end
+        self.red = red
+        self.blue = blue
+        self.green = green
 
     def animate(self):
-        color = int(self.brightness * 255)
         for i in range(self.start, self.end):
-            self.strip.setPixelColor(i, Color(color, color, color))
+            self.strip.setPixelColor(i, Color(self.red, self.green, self.blue))
 
