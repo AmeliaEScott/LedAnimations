@@ -22,7 +22,7 @@ class Fairy:
         dist = int(dist)
         #fraction = fraction ** 0.5
         startFraction = 1 - fraction
-        for i in range(1, int(self.speed) + 1):
+        for i in range(1, int(self.speed) + 1) or [1]:
             self.strip.setPixelColor(dist - i, 0)
         self.strip.setPixelColor(dist, Color(int(startFraction * self.red), int(startFraction * self.green), int(startFraction * self.blue)))
         for i in range(1, self.width):
