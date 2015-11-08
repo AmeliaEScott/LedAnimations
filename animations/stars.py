@@ -58,5 +58,9 @@ class Stars(object):
             self.theStars.remove(star)
             self.theStars.append(self.Star(self, self.red, self.green, self.blue))
                 
+    def toJson(self):
+        json = '{"animation": "stars", "starCount": ' + str(self.starCount) + ', "brightness": ' + str(self.brightness) + ', '
+        json += '"red": ' + str(self.red) + ', "green": ' + str(self.green) + ', "blue": ' + str(self.blue) + '}'
+        return json
 
     

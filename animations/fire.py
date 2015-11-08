@@ -59,3 +59,9 @@ class Fire(object):
             green = int(brightness * (MIN_GREEN + color * (MAX_GREEN - MIN_GREEN)))
             self.strip.setPixelColor(self.center + i, Color(red, green, 0))
             self.strip.setPixelColor(self.center - i, Color(red, green, 0))
+
+    def toJson(self):
+        json = '{"animation": "fire", "center": '
+        json += str(self.center) + ', "maxBrightness": ' + str(self.maxBrightness) + ', '
+        json += '"minStandDev": ' + str(self.minStandDev) + ', "maxStandDev": ' + str(self.maxStandDev) + '}'
+        return json
