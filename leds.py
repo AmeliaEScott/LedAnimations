@@ -19,8 +19,8 @@ class Leds(object):
 
     def __init__(self):
         self.animations.append(Fire(self.strip, 1, 250, 15, 20))
-        self.animations.append(Strobe(self.strip, 0, LED_COUNT, 1, 1, 255, 255, 255))
-        self.animations.append(Fairy(self.strip, 430, 50, 10.5, 255, 180, 0))
+        #self.animations.append(Strobe(self.strip, 0, LED_COUNT, 1, 1, 255, 255, 255))
+        self.animations.append(Fairy(self.strip, 430, 5, 2, 255, 180, 0))
 
         
     def run(self):
@@ -48,6 +48,6 @@ class Leds(object):
 
     def add(self, anim):
         with self.lock:
-            anim.id = self.id;
-            self.id = self.id + 1;
+            anim.id = self.maxId;
+            self.maxId = self.maxId + 1;
             self.animations.append(anim)
