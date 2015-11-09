@@ -17,7 +17,7 @@ class StaticLight:
             self.strip.setPixelColor(i, Color(self.red, self.green, self.blue))
 
     def toJson(self):
-        json = '{"animation": "staticLight", "start": '
+        json = '{"animation": "staticLight", "id": "' + self.id + '", "start": '
         json += str(self.start) + ', "end": ' + str(self.end) + ', '
         json += '"red": ' + str(self.red) + ', "green": ' + str(self.green) + ', "blue": ' + str(self.blue) + '}'
         return json

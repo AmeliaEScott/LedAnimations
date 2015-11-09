@@ -30,7 +30,7 @@ class Fairy:
         self.strip.setPixelColor(dist + self.width, Color(int(fraction * self.red), int(fraction * self.green), int(fraction * self.blue)))
 
     def toJson(self):
-        json = '{"animation": "fairy", "start": '
+        json = '{"animation": "fairy", "id": "' + self.id + '", "start": '
         json += str(self.start) + ', "width": ' + str(self.width) + ', "speed": ' + str(self.speed) + ', '
         json += '"red": ' + str(self.red) + ', "green": ' + str(self.green) + ', "blue": ' + str(self.blue) + '}'
         return json

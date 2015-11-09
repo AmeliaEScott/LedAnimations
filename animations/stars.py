@@ -9,7 +9,7 @@ starMaxDuration = 150
 
 class Stars(object):
     
-    theStars=[]
+    #theStars=[]
     
     class Star(object):
         
@@ -36,13 +36,16 @@ class Stars(object):
         self.strip = strip
         self.starCount = starCount
         self.brightness = brightness
+        self.theStars = []
         for i in range(starCount):
             self.theStars.append(self.Star(self, red, green, blue))
+            print "Adding star " + str(i)
         self.red = red
         self.green = green
         self.blue = blue
         
     def animate(self):
+        #print "Length: " + str(len(self.theStars))
         toRemove = []
         for star in self.theStars:
             if(star.curTime > star.duration):
@@ -59,7 +62,7 @@ class Stars(object):
             self.theStars.append(self.Star(self, self.red, self.green, self.blue))
                 
     def toJson(self):
-        json = '{"animation": "stars", "starCount": ' + str(self.starCount) + ', "brightness": ' + str(self.brightness) + ', '
+        json = '{"animation": "stars", "id": "' + self.id + '", "starCount": ' + str(self.starCount) + ', "brightness": ' + str(self.brightness) + ', '
         json += '"red": ' + str(self.red) + ', "green": ' + str(self.green) + ', "blue": ' + str(self.blue) + '}'
         return json
 

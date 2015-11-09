@@ -42,22 +42,28 @@ class MyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             #s.wfile.write(json.dumps(s.leds.animations))
         elif s.path.startswith('/addanimation'):
             #print data['animation']
-            #print data['maxStandDev'][0]
+            
             if data['animation'][0] == 'fire':
-                s.leds.add(Fire(s.leds.strip, float(data['maxBrightness'][0]), int(data['center'][0]),
+                newAnim = (Fire(s.leds.strip, float(data['maxBrightness'][0]), int(data['center'][0]),
                     float(data['minStandDev'][0]), float(data['maxStandDev'][0])))
             elif data['animation'][0] == 'stars':
-                s.leds.add(Stars(s.leds.strip, int(data['starCount'][0]), float(data['brightness'][0]),
+                newAnim = (Stars(s.leds.strip, int(data['starCount'][0]), float(data['brightness'][0]),
                     int(data['red'][0]), int(data['green'][0]), int(data['blue'][0])))
             elif data['animation'][0] == 'fairy':
-                s.leds.add(Fairy(s.leds.strip, int(data['start'][0]), float(data['width'][0]), float(data['speed'][0]),
+                newAnim = (Fairy(s.leds.strip, int(data['start'][0]), float(data['width'][0]), float(data['speed'][0]),
                     int(data['red'][0]), int(data['green'][0]), int(data['blue'][0])))
             elif data['animation'][0] == 'staticlight':
-                s.leds.add(StaticLight(s.leds.strip, int(data['start'][0]), int(data['end'][0]),
+                newAnim = (StaticLight(s.leds.strip, int(data['start'][0]), int(data['end'][0]),
                     int(data['red'][0]), int(data['green'][0]), int(data['blue'][0])))
             elif data['animation'][0] == 'strobe':
-                s.leds.add(Strobe(s.leds.strip, int(data['start'][0]), int(data['end'][0]), int(data['on'][0]), int(data['off'][0]),
+                newAnim = (Strobe(s.leds.strip, int(data['start'][0]), int(data['end'][0]), int(data['on'][0]), int(data['off'][0]),
                     int(data['red'][0]), int(data['green'][0]), int(data['blue'][0])))
+            if data.has_key('id'):
+                newAnim.id = data['id'][0]
+            s.leds.add(newAnim)
+        elif s.path.startswith('/removeanimation'):
+            s.leds.remove(data['id'][0])
+
         #if data.has_key('id'):
         #        print data['id'][0]
         #        if s.path.startswith('/animation'):

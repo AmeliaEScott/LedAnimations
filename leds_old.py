@@ -22,7 +22,8 @@ strip.begin()
 
 stars = Stars(strip, 15, 1, 255, 255, 255)
 #150-225
-light = StaticLight(strip, 150, 225, 255, 150, 150)
+#light = StaticLight(strip, 150, 225, 255, 150, 150)
+light = StaticLight(strip, 0, LED_COUNT, 200, 160, 160)
 #light = StaticLight(strip, 0, LED_COUNT, 63, 12, 0)
 fire = Fire(strip, 0.1, 1, 3, 6)
 fire2 = Fire(strip, 1, 100, 7, 10)
@@ -36,14 +37,14 @@ totalSleepTime = 0
 while 1:
     start = time.time()
     light.animate()
-    stars.animate()
+    #stars.animate()
     #light.animate()
     #fire.animate()
-    fire2.animate()
+    #fire2.animate()
     #fire3.animate()
     #strobe.animate()
     #fairy.animate()
-    fairy2.animate()
+    #fairy2.animate()
 
     strip.show()
     ticks += 1

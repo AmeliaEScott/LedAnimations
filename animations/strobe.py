@@ -28,7 +28,7 @@ class Strobe:
             self.strip.setPixelColor(i, color)
 
     def toJson(self):
-        json = '{"animation": "strobe", "start": '
+        json = '{"animation": "strobe", "id": "' + self.id + '", "start": '
         json += str(self.start) + ', "end": ' + str(self.end) + ', "on": ' + str(self.on) +  ', "off": ' + str(self.off) + ', '
         json += '"red": ' + str(self.red) + ', "green": ' + str(self.green) + ', "blue": ' + str(self.blue) + '}'
         return json

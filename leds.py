@@ -18,9 +18,9 @@ class Leds(object):
     maxId = 0
 
     def __init__(self):
-        self.animations.append(Fire(self.strip, 1, 250, 15, 20))
+        self.add(Fire(self.strip, 1, 250, 15, 20))
         #self.animations.append(Strobe(self.strip, 0, LED_COUNT, 1, 1, 255, 255, 255))
-        self.animations.append(Fairy(self.strip, 430, 5, 2, 255, 180, 0))
+        self.add(Fairy(self.strip, 430, 5, 2, 255, 180, 0))
 
         
     def run(self):
@@ -42,12 +42,18 @@ class Leds(object):
     
     def remove(self, id):
         with self.lock:
-            for anim in animations:
+            toRemove = []
+            for anim in self.animations:
                 if(anim.id == id):
-                    animations.remove(anim)
+                    toRemove.append(anim)
+            for anim in toRemove:
+                self.animations.remove(anim)
+        for i in range(0, LED_COUNT):
+            self.strip.setPixelColor(i, 0)
 
     def add(self, anim):
         with self.lock:
-            anim.id = self.maxId;
-            self.maxId = self.maxId + 1;
+            if not(hasattr(anim, 'id')):
+                anim.id = str(self.maxId);
+                self.maxId = self.maxId + 1;
             self.animations.append(anim)
