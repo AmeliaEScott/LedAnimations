@@ -11,9 +11,11 @@ from threading import Thread
 class LedSupervisor(Thread):
 
     def __init__(self, ledstripparams):
+        print("Within LED supervisor __init__ now")
         self.strip = LedStrip(**ledstripparams)
+        print("successfully initialized LedStrip")
         self.strip.begin()
-
+        print("Successfully called begin() on strip")
         self.animations = {}
         super().__init__()
 

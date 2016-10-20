@@ -16,8 +16,10 @@ class LedStrip(Adafruit_NeoPixel):
 
         for i in range(0, self.numPixels()):
             self.setPixelColor(i, 0)
+        print("Finished initializing LED strip")
 
     def setPixelColor(self, index, color=None, rgb=None, alpha=255, rgba=None):
+        print("Setting pixel color...")
         if rgba is not None:
             alpha = rgba[3]
             rgb = rgba[0:3]
@@ -35,3 +37,4 @@ class LedStrip(Adafruit_NeoPixel):
             currentcolor = self.getPixelColor(index)
             newcolor = (currentcolor * (1 - (alpha / 255))) + (color * (alpha / 255))
             super().setPixelColor(index, newcolor)
+        print("Finished setting pixel color")

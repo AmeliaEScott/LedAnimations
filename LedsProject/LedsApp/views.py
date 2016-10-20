@@ -5,8 +5,9 @@ from .LedsBackend.led_supervisor import LedSupervisor
 from . import settings
 import json
 
-print("WOW, VERY MUCH OF THE TESTING IS BEING DONE")
+print("Initializing led_supervisor...")
 ledSupervisor = LedSupervisor(settings.LED_STRIP_PARAMS)
+print("Done initializing LED supervisor.")
 
 
 def index(request):
