@@ -1,20 +1,21 @@
 try:
     from neopixel import *
 except ImportError:
-    from DummyLibrary.neopixel import *
+    from ..DummyLibrary.neopixel import *
+
 
 class LedStrip(Adafruit_NeoPixel):
 
-    def __init__(self, length, pin, freq_hz=800000, dma=5, invert=False, wraparound=False, powerLimit=None):
+    def __init__(self, length, pin, freq_hz=800000, dma=5, invert=False, wraparound=False, powerlimit=None):
         super().__init__(length, pin, freq_hz, dma, invert)
 
-        self.powerLimit = powerLimit
+        self.powerLimit = powerlimit
         self.powerUsed = 0
+
+        self.wraparound = wraparound
 
         for i in range(0, self.numPixels()):
             self.setPixelColor(i, 0)
-
-        self.wraparound = wraparound
 
     def setPixelColor(self, index, color=None, rgb=None, alpha=255, rgba=None):
         if rgba is not None:

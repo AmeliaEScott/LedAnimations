@@ -11,13 +11,13 @@ class Adafruit_NeoPixel:
         pass
 
     def numPixels(self):
-        pass
+        return self.length
 
     def setPixelColorRGB(self, index, red, green, blue):
         pass
 
     def getPixelColor(self, index):
-        pass
+        return 0
 
     def show(self):
         pass
@@ -25,5 +25,6 @@ class Adafruit_NeoPixel:
     def begin(self):
         pass
 
+
 def Color(red, green, blue):
-    pass
+    return 0
