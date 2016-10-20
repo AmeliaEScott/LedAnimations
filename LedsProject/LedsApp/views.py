@@ -1,11 +1,22 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 # Create your views here.
-from .LedsBackend import led_supervisor
+from .LedsBackend.led_supervisor import LedSupervisor
+from . import settings
+import json
 
 print("WOW, VERY MUCH OF THE TESTING IS BEING DONE")
-led_supervisor.test()
+ledSupervisor = LedSupervisor(settings.LED_STRIP_PARAMS)
 
 
 def index(request):
-    return HttpResponse(render(request=request, template_name='LedsApp/index.html'))
+    context = {
+        'animationoptionsjson': json.dumps(ledSupervisor.getanimationoptions()),
+        'animationoptions': ledSupervisor.getanimationoptions()
+    }
+    return HttpResponse(render(context=context, request=request, template_name='LedsApp/index.html'))
+    # return HttpResponse(repr(ledSupervisor.getanimationoptions()))
+
+
+def getanimations(request):
+    pass

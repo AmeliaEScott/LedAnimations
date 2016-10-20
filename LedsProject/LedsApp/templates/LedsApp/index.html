@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LED Controls</title>
+
+    <script src="{% static "LedsApp/libraries/jquery.min.js" %}"></script>
+    <script src="{% static "LedsApp/libraries/bootstrap/js/bootstrap.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static "LedsApp/libraries/bootstrap/css/bootstrap.min.css" %}">
+</head>
+<body>
+<script type="text/javascript">
+    {% autoescape off %}
+    animationOptions = {{ animationoptionsjson }};
+    {% endautoescape %}
+</script>
+
+<div class="container">
+    <a href="{% static "LedsApp/statictest.html" %}">WOW WHAT A LINK</a>
+    {% for key,value in animationoptions.items %}
+        <form>
+            <strong>Name: </strong> {{ value.name }} <br>
+            <strong>Description: </strong> {{ value.description }} <br>
+            {% for parameter in value.parameters %}
+                <div class="form-group">
+
+                    <label>{{ parameter.displayname|title }}</label>
+                    {% if parameter.type == "string" %}
+                    <input type="text" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
+                    {% elif parameter.type == "float" %}
+                    <input type="number" step="any" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
+                    {% elif parameter.type == "integer" %}
+                    <input type="number" step="1" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
+                    {% elif parameter.type == "color" %}
+                    <input type="color" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
+                    {%  endif %}
+
+                    {% if parameter.description %}
+                        <small>{{ parameter.description }}</small>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+        </form>
+
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
+    {% endfor %}
+</div>
+</body>
+</html>
