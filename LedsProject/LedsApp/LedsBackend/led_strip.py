@@ -14,8 +14,6 @@ class LedStrip(Adafruit_NeoPixel):
 
         self.wraparound = wraparound
 
-        for i in range(0, self.numPixels()):
-            self.setPixelColor(i, 0)
         print("Finished initializing LED strip")
 
     def setPixelColor(self, index, color=None, rgb=None, alpha=255, rgba=None):
