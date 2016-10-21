@@ -4,7 +4,7 @@ from ..plugins import Animation, AnimationParameter
 class Fairy(Animation):
     
     def __init__(self, id, **kwargs):
-        super().__init__(id, kwargs)
+        super().__init__(id, kwargs=kwargs)
         self.start = kwargs['start']
         self.width = kwargs['width']
         self.speed = kwargs['speed']

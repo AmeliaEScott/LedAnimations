@@ -31,14 +31,17 @@ class LedSupervisor(Thread):
         strip = LedStrip(pipe=pipe, length=settings["strip_settings"]["length"],
                          wraparound=settings["strip_settings"]["wraparound"])
 
+        from .animations.fairy import Fairy
+        fairy = Fairy(id=12, start=5, width=12, color=(255, 0, 0), speed=1)
         while True:
             print("Calling self.strip.show()")
             try:
+                fairy.animate(1, strip)
                 strip.show()
             except BrokenPipeError:
                 print("Pipe broke. Waiting 5 seconds and trying again.")
                 time.sleep(5)
-            time.sleep(2)
+            time.sleep(1)
 
     @staticmethod
     def getanimationoptions():
