@@ -1,5 +1,4 @@
 from ..plugins import Animation, AnimationParameter
-import json
 
 
 class StaticLight(Animation):

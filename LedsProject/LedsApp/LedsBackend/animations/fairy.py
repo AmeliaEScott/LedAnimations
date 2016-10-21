@@ -1,9 +1,4 @@
-try:
-    from neopixel import *
-except ImportError:
-    from ...DummyLibrary.neopixel import *
 from ..plugins import Animation, AnimationParameter
-import json
 
 
 class Fairy(Animation):

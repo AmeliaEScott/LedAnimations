@@ -65,7 +65,7 @@ class Animation:
         return
 
 
-class AnimationParameter():
+class AnimationParameter:
 
     def __init__(self, displayname, description=None, type='string', default=None, optional=False, advanced=False,
                  minimum=None, maximum=None):

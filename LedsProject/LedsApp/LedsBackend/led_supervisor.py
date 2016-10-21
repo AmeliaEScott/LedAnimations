@@ -1,26 +1,39 @@
-try:
-    from neopixel import *
-except ImportError:
-    from ..DummyLibrary import neopixel
 from ..LedsBackend.led_strip import LedStrip
 from .animations.__init__ import animationclasses
 from .plugins import Animation, AnimationParameter
 from threading import Thread
+import time
+import os
+
+PIPE_PATH = '/Users/Timmy/git/LedAnimations/datapipe'
 
 
 class LedSupervisor(Thread):
 
     def __init__(self, ledstripparams):
         print("Within LED supervisor __init__ now")
-        self.strip = LedStrip(**ledstripparams)
+
         print("successfully initialized LedStrip")
-        self.strip.begin()
-        print("Successfully called begin() on strip")
         self.animations = {}
         super().__init__()
+        self.start()
 
     def run(self):
-        self.strip.show()
+        try:
+            os.mkfifo(PIPE_PATH)
+        except OSError:
+            print('OSError when opening pipe')
+        pipe = open(PIPE_PATH, 'w')
+        strip = LedStrip(pipe=pipe, length=10, wraparound=True)
+
+        while True:
+            print("Calling self.strip.show()")
+            try:
+                strip.show()
+            except BrokenPipeError:
+                print("Pipe broke. Waiting 5 seconds and trying again.")
+                time.sleep(5)
+            time.sleep(2)
 
     @staticmethod
     def getanimationoptions():
@@ -34,9 +47,3 @@ class LedSupervisor(Thread):
                 classinfo['parameters'].append(param.__dict__())
             animations[clazz.getanimationinfo()['name']] = classinfo
         return animations
-
-
-def test():
-    strip = LedStrip(467, 18)
-    strip.begin()
-    strip.setPixelColor(12, rgb=(255, 255, 0))
