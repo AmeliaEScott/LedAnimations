@@ -2,7 +2,7 @@
 
 class Adafruit_NeoPixel:
 
-    def __init__(self, length, pin, freq_hz=800000, dma=5, invert=False):
+    def __init__(self, length, pin, freq_hz=800000, dma=5, invert=False, brightness=255):
         self.length = length
         self.pin = pin
         print("WARNING: You're using the dummy library!!")
@@ -20,7 +20,7 @@ class Adafruit_NeoPixel:
         return 0
 
     def show(self):
-        pass
+        print("Dummy strip being shown")
 
     def begin(self):
         pass

@@ -2,11 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # Create your views here.
 from .LedsBackend.led_supervisor import LedSupervisor
-from . import settings
 import json
 
 print("Initializing led_supervisor...")
-ledSupervisor = LedSupervisor(settings.LED_STRIP_PARAMS)
+ledSupervisor = LedSupervisor()
 print("Done initializing LED supervisor.")
 
 

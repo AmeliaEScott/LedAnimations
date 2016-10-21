@@ -1,21 +1,26 @@
-# try:
-#     from neopixel import *
-# except ImportError:
-#     from .DummyLibrary.neopixel import *
+try:
+    from neopixel import *
+except ImportError:
+    from .dummy_neopixel import *
 import os
 import time
+import json
 
-PIPE_PATH = '/Users/Timmy/git/LedAnimations/datapipe'
 
-# LED_COUNT      = 16      # Number of LED pixels.
-# LED_PIN        = 18      # GPIO pin connected to the pixels (must support PWM!).
-# LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
-# LED_DMA        = 5       # DMA channel to use for generating signal (try 5)
-# LED_BRIGHTNESS = 255     # Set to 0 for darkest and 255 for brightest
-# LED_INVERT     = False   # True to invert the signal (when using NPN transistor level shift)
-#
-# strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
-# strip.begin()
+with open(os.path.join(os.path.dirname(__file__), '..', 'settings.json')) as settingsfile:
+    settings = json.load(settingsfile)
+
+PIPE_PATH = settings["pipe_name"]
+
+LED_COUNT = settings["strip_settings"]["length"]
+LED_PIN = settings["strip_settings"]["pin"]
+LED_FREQ_HZ = settings["strip_settings"]["frequency"]
+LED_DMA = settings["strip_settings"]["dma"]
+LED_BRIGHTNESS = settings["strip_settings"]["brightness"]
+LED_INVERT = settings["strip_settings"]["invert"]
+
+strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+strip.begin()
 
 try:
     os.mkfifo(PIPE_PATH)
@@ -31,6 +36,5 @@ while True:
         time.sleep(5)
     else:
         for i in range(0, len(result) - 1):
-            print(result[i])
-
-    print('Done reading, for now...')
+            strip.setPixelColor(i, result[i])
+        strip.show()

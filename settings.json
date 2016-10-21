@@ -1,0 +1,13 @@
+{
+  "strip_settings": {
+    "length": 20,
+    "pin": 18,
+    "frequency": 800000,
+    "dma": 5,
+    "brightness": 255,
+    "invert": false,
+    "wraparound": true,
+    "powerlimit": 3
+  },
+  "pipe_name": "/Users/Timmy/git/LedAnimations/datapipe"
+}

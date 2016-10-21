@@ -4,13 +4,17 @@ from .plugins import Animation, AnimationParameter
 from threading import Thread
 import time
 import os
+import json
 
-PIPE_PATH = '/Users/Timmy/git/LedAnimations/datapipe'
+with open(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'settings.json')) as settingsfile:
+    settings = json.load(settingsfile)
+
+PIPE_PATH = settings["pipe_name"]
 
 
 class LedSupervisor(Thread):
 
-    def __init__(self, ledstripparams):
+    def __init__(self):
         print("Within LED supervisor __init__ now")
 
         print("successfully initialized LedStrip")
@@ -24,7 +28,8 @@ class LedSupervisor(Thread):
         except OSError:
             print('OSError when opening pipe')
         pipe = open(PIPE_PATH, 'w')
-        strip = LedStrip(pipe=pipe, length=10, wraparound=True)
+        strip = LedStrip(pipe=pipe, length=settings["strip_settings"]["length"],
+                         wraparound=settings["strip_settings"]["wraparound"])
 
         while True:
             print("Calling self.strip.show()")
