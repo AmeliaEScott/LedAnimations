@@ -30,11 +30,11 @@ except OSError:
 pipe = open(PIPE_PATH, 'r')
 
 while True:
-    result = bytearray(pipe.readline(), 'ascii')
-    if result is None or len(result) <= 0:
+    result = pipe.readline().split(" ")
+    if result is None or len(result) <= 0 or result == "":
         print("Broken pipe. Waiting 5 seconds then trying again.")
         time.sleep(5)
     else:
         for i in range(0, len(result) - 1):
-            strip.setPixelColor(i, result[i])
+            strip.setPixelColor(i, int(result[i]))
         strip.show()
