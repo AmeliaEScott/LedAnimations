@@ -3,12 +3,12 @@ from ..plugins import Animation, AnimationParameter
 
 class Fairy(Animation):
     
-    def __init__(self, id, **kwargs):
-        super().__init__(id, kwargs=kwargs)
-        self.start = kwargs['start']
-        self.width = kwargs['width']
-        self.speed = kwargs['speed']
-        self.color = kwargs['color']
+    def __init__(self, id, options):
+        super().__init__(id, options=options)
+        self.start = options['start']
+        self.width = options['width']
+        self.speed = options['speed']
+        self.color = options['color']
 
         self.tick = 0
 

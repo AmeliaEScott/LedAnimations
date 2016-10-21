@@ -24,6 +24,7 @@ class LedSupervisor(Thread):
         self.start()
 
     def run(self):
+        time.sleep(5)
         try:
             os.mkfifo(PIPE_PATH)
         except OSError:
@@ -33,10 +34,10 @@ class LedSupervisor(Thread):
                          wraparound=settings["strip_settings"]["wraparound"])
 
         while True:
-            print("Calling self.strip.show()")
+            # print("Calling self.strip.show()")
             try:
                 for anim in self.animations:
-                    self.animations[anim].animate(strip)
+                    self.animations[anim].animate(delta=1, strip=strip)
                 strip.show()
                 strip.clear()
             except BrokenPipeError:
@@ -47,8 +48,14 @@ class LedSupervisor(Thread):
     def addanimation(self, name, options):
         for clazz in animationclasses:
             if clazz.getanimationinfo()['name'] == name:
-                self.animations[self.maxid] = clazz(options)
+                self.animations[self.maxid] = clazz(self.maxid, options)
                 self.maxid += 1
+
+    def getanimations(self):
+        return self.animations
+
+    def removeanimation(self, id):
+        del self.animations[id]
 
     @staticmethod
     def getanimationoptions():

@@ -5,9 +5,9 @@ import json
 class Animation:
 
     @abc.abstractmethod
-    def __init__(self, id, **kwargs):
+    def __init__(self, id, options):
         """
-        :param kwargs: This will be a dict which contains an entry for every parameter returned by getparams(),
+        :param options: This will be a dict which contains an entry for every parameter returned by getparams(),
             even if the user did not supply a value. In this case, the value will be None.
             For example, if getparams() returns this:
                 [
@@ -20,7 +20,7 @@ class Animation:
                     'brightness': None,             # This means the user did not provide a 'brightness' value
                 }
         """
-        self.kwargs = kwargs
+        self.options = options
         self.id = id
         return
 
@@ -39,7 +39,7 @@ class Animation:
         """
         :return: A JSON String representing this animation in full detail.
         """
-        return json.dumps(self.kwargs)
+        return json.dumps(self.options)
 
     @staticmethod
     @abc.abstractclassmethod

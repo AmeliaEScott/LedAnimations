@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 from .LedsBackend.led_supervisor import LedSupervisor
 import json
@@ -19,5 +20,37 @@ def index(request):
     # return HttpResponse(repr(ledSupervisor.getanimationoptions()))
 
 
+def getanimationoptions(request):
+    return JsonResponse(ledSupervisor.getanimationoptions())
+
+
 def getanimations(request):
-    pass
+    animations = ledSupervisor.getanimations()
+    output = {}
+    for id in animations:
+        output[id] = {
+            "name": animations[id].getanimationinfo()['name'],
+            "options": animations[id].options
+        }
+    return JsonResponse(output)
+
+
+@csrf_exempt
+def addanimation(request):
+    # try:
+    data = json.loads(request.body.decode("utf-8"))
+    animationdata = data['data']
+    name = data['name']
+    # except:
+    #     return HttpResponse("Could not load animation data", status=404)
+    ledSupervisor.addanimation(name, animationdata)
+    return HttpResponse("Successfully added animation.", status=200)
+
+
+@csrf_exempt
+def removeanimation(request, id):
+    if request.method.lower() == "delete":
+        ledSupervisor.removeanimation(int(id))
+        return HttpResponse("Successfully deleted animation.", status=200)
+    else:
+        return HttpResponse("Method not supported. Must use DELETE", status=403)

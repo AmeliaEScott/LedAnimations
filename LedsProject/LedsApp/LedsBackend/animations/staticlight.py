@@ -3,11 +3,11 @@ from ..plugins import Animation, AnimationParameter
 
 class StaticLight(Animation):
     
-    def __init__(self, id, **kwargs):
-        super().__init__(id, kwargs)
-        self.start = kwargs['start']
-        self.end = kwargs['end']
-        self.color = kwargs['color']
+    def __init__(self, id, options):
+        super().__init__(id, options)
+        self.start = options['start']
+        self.end = options['end']
+        self.color = options['color']
 
     def animate(self, delta, strip):
         for i in range(self.start, self.end):

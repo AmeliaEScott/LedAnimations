@@ -19,7 +19,7 @@ class LedStrip:
         print("Finished initializing LED strip")
 
     def setPixelColor(self, index, color=None, rgb=None, alpha=255, rgba=None):
-        print("Setting pixel color...")
+        # print("Setting pixel color...")
         if rgba is not None:
             alpha = rgba[3]
             rgb = rgba[0:3]
@@ -37,10 +37,10 @@ class LedStrip:
             currentcolor = self.pixels[index]
             newcolor = (currentcolor * (1 - (alpha / 255))) + (color * (alpha / 255))
             self.pixels[index] = int(newcolor)
-        print("Finished setting pixel color")
+        # print("Finished setting pixel color")
 
     def show(self):
-        print("Writing " + repr(self.pixels))
+        # print("Writing " + repr(self.pixels))
         for pixel in self.pixels:
             self.pipe.write(str(pixel) + " ")
         self.pipe.write("\n")
