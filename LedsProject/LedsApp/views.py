@@ -5,7 +5,11 @@ from django.views.decorators.csrf import csrf_exempt
 from .LedsBackend.led_supervisor import LedSupervisor
 import json
 
+
+# This code is run when Django starts up
+# I don't know if it's good practice to put code here, but hey, it works
 print("Initializing led_supervisor...")
+# The LED Supervisor handles all of the animations, and has them do their thing ~30 times per second
 ledSupervisor = LedSupervisor()
 print("Done initializing LED supervisor.")
 
@@ -15,7 +19,7 @@ def index(request):
         'animationoptionsjson': json.dumps(ledSupervisor.getanimationoptions()),
         'animationoptions': ledSupervisor.getanimationoptions()
     }
-    ledSupervisor.addanimation('Fairy', {'start': 1, 'width': 5, 'speed': 2, 'color': (255, 0, 0)})
+    # ledSupervisor.addanimation('Fairy', {'start': 1, 'width': 5, 'speed': 2, 'color': (255, 0, 0)})
     return HttpResponse(render(context=context, request=request, template_name='LedsApp/index.html'))
     # return HttpResponse(repr(ledSupervisor.getanimationoptions()))
 

@@ -13,6 +13,10 @@ PIPE_PATH = settings["pipe_name"]
 
 
 class LedSupervisor(Thread):
+    """
+    This class runs a separate thread that handles animations. The bulk of the important code
+    is in the run() method.
+    """
 
     def __init__(self):
         print("Within LED supervisor __init__ now")
@@ -21,6 +25,7 @@ class LedSupervisor(Thread):
         self.animations = {}
         self.maxid = 0
         super().__init__()
+        self.running = True
         self.start()
 
     def run(self):
@@ -33,17 +38,26 @@ class LedSupervisor(Thread):
         strip = LedStrip(pipe=pipe, length=settings["strip_settings"]["length"],
                          wraparound=settings["strip_settings"]["wraparound"])
 
-        while True:
+        framelength = 1 / settings["misc"]["framerate"]
+        while self.running:
+            starttime = time.time()
             # print("Calling self.strip.show()")
             try:
                 for anim in self.animations:
                     self.animations[anim].animate(delta=1, strip=strip)
                 strip.show()
                 strip.clear()
+                delay = framelength - (time.time() - starttime)
+                if delay > 0:
+                    pass
+                    time.sleep(delay)
             except BrokenPipeError:
                 print("Pipe broke. Waiting 5 seconds and trying again.")
                 time.sleep(5)
-            time.sleep(1)
+            except RuntimeError:
+                print("Caught a runtime error in LedSupervisor. Probably because of multithreading, but who knows?")
+                time.sleep(0.01)
+            # time.sleep(1)
 
     def addanimation(self, name, options):
         for clazz in animationclasses:
@@ -56,6 +70,9 @@ class LedSupervisor(Thread):
 
     def removeanimation(self, id):
         del self.animations[id]
+
+    def stop(self):
+        self.running = False
 
     @staticmethod
     def getanimationoptions():

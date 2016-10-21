@@ -9,5 +9,8 @@
     "wraparound": true,
     "powerlimit": 3
   },
+  "misc": {
+    "framerate": 30
+  },
   "pipe_name": "/Users/Timmy/git/LedAnimations/datapipe"
 }
