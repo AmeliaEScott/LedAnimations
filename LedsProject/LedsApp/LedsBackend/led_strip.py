@@ -46,11 +46,18 @@ class LedStrip:
         self.pipe.write("\n")
         self.pipe.flush()
 
+    def clear(self):
+        self.pixels = [0] * self.length
 
-def Color(red, green, blue, white = 0):
+
+def Color(red, green, blue, white=0):
     """
     Convert the provided red, green, blue color to a 24-bit color value.
     Each color component should be a value 0-255 where 0 is the lowest intensity
     and 255 is the highest intensity.
     """
-    return (white << 24) | (red << 16) | (green << 8) | blue
+    return (white << 24) | (green << 16) | (red << 8) | blue
+
+
+def rgb(color):
+    return color & (255 << 16), color & (255 << 8), color & 255

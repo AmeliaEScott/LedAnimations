@@ -19,6 +19,7 @@ class LedSupervisor(Thread):
 
         print("successfully initialized LedStrip")
         self.animations = {}
+        self.maxid = 0
         super().__init__()
         self.start()
 
@@ -31,17 +32,23 @@ class LedSupervisor(Thread):
         strip = LedStrip(pipe=pipe, length=settings["strip_settings"]["length"],
                          wraparound=settings["strip_settings"]["wraparound"])
 
-        from .animations.fairy import Fairy
-        fairy = Fairy(id=12, start=5, width=12, color=(255, 0, 0), speed=1)
         while True:
             print("Calling self.strip.show()")
             try:
-                fairy.animate(1, strip)
+                for anim in self.animations:
+                    self.animations[anim].animate(strip)
                 strip.show()
+                strip.clear()
             except BrokenPipeError:
                 print("Pipe broke. Waiting 5 seconds and trying again.")
                 time.sleep(5)
             time.sleep(1)
+
+    def addanimation(self, name, options):
+        for clazz in animationclasses:
+            if clazz.getanimationinfo()['name'] == name:
+                self.animations[self.maxid] = clazz(options)
+                self.maxid += 1
 
     @staticmethod
     def getanimationoptions():

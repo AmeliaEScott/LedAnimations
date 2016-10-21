@@ -14,6 +14,7 @@ def index(request):
         'animationoptionsjson': json.dumps(ledSupervisor.getanimationoptions()),
         'animationoptions': ledSupervisor.getanimationoptions()
     }
+    ledSupervisor.addanimation('Fairy', {'start': 1, 'width': 5, 'speed': 2, 'color': (255, 0, 0)})
     return HttpResponse(render(context=context, request=request, template_name='LedsApp/index.html'))
     # return HttpResponse(repr(ledSupervisor.getanimationoptions()))
 
