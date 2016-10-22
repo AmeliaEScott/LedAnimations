@@ -4,10 +4,10 @@ import math
 
 
 class Stars(Animation):
-        
+
     class Star(object):
         
-        def __init__(self, parent, color, startloc, endloc):
+        def __init__(self, parent, color, startloc, endloc, starMinDuration, starMaxDuration):
             
             self.loc = startloc + int(random.random() * (endloc - startloc))
             done = 0
@@ -30,9 +30,11 @@ class Stars(Animation):
         self.color = params["Color"]
         self.startloc = params["Start Location"]
         self.endloc = params["End Location"]
+        self.starMinDuration = params["Star Minimum Duration"]
+        self.starMaxDuration = params["Star Maximum Duration"]
         self.theStars = []
         for i in range(self.starCount):
-            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc))
+            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc, self.starMinDuration, self.starMaxDuration))
             print("Adding star " + str(i))
         
     def animate(self, delta, strip):
@@ -51,7 +53,7 @@ class Stars(Animation):
                                                    int(star.blue * brightness)))
         for star in toRemove:
             self.theStars.remove(star)
-            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc))
+            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc, self.starMinDuration, self.starMaxDuration))
 
     @staticmethod
     def getanimationinfo():
@@ -68,5 +70,7 @@ class Stars(Animation):
                                type="float", optional=True, default=1.0, minimum=0.0, maximum=1.0),
             AnimationParameter("Color", description="Color of all of the stars", type="color"),
             AnimationParameter("Star Minimum Duration", type="float", default=1.0, optional=True, advanced=True),
-            AnimationParameter("Star Maximum Duration", type="float", default=5.0, optional=True, advanced=True)
+            AnimationParameter("Star Maximum Duration", type="float", default=5.0, optional=True, advanced=True),
+            AnimationParameter("Start Location", type="integer"),
+            AnimationParameter("End Location", type="integer"),
         ]
