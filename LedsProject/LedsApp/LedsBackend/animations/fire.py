@@ -71,9 +71,6 @@ class Fire(Animation):
             strip.setPixelColor(self.center + i, rgb=(red, green, 0))
             strip.setPixelColor(self.center - i, rgb=(red, green, 0))
 
-    def tojson(self):
-        return json.dumps(self.options)
-
     @staticmethod
     def getanimationinfo():
         return {
