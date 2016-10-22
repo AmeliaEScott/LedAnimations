@@ -44,6 +44,9 @@ class LedServer:
                 result = pipe.readline().split(" ")
                 if result is None or len(result) <= 1 or result == "":
                     print("Broken pipe. Waiting 5 seconds then trying again.")
+                    for i in range(0, LED_COUNT):
+                        strip.setPixelColor(i, 0)
+                    strip.show()
                     time.sleep(5)
                 else:
                     for i in range(0, len(result) - 1):

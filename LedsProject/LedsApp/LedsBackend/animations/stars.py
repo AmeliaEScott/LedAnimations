@@ -18,7 +18,8 @@ class Stars(Animation):
                     if star.loc == self.loc:
                         done = 0
             self.curTime = 0
-            self.duration = int(random.random() * (starMaxDuration - starMinDuration)) + starMinDuration
+            self.duration = (random.random() * (starMaxDuration - starMinDuration)) + starMinDuration
+            print("Duration: " + str(self.duration))
             self.red = color[0]
             self.green = color[1]
             self.blue = color[2]
@@ -34,7 +35,8 @@ class Stars(Animation):
         self.starMaxDuration = params["Star Maximum Duration"]
         self.theStars = []
         for i in range(self.starCount):
-            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc, self.starMinDuration, self.starMaxDuration))
+            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc,
+                                           self.starMinDuration, self.starMaxDuration))
             print("Adding star " + str(i))
         
     def animate(self, delta, strip):
@@ -53,7 +55,8 @@ class Stars(Animation):
                                                    int(star.blue * brightness)))
         for star in toRemove:
             self.theStars.remove(star)
-            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc, self.starMinDuration, self.starMaxDuration))
+            self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc,
+                                           self.starMinDuration, self.starMaxDuration))
 
     @staticmethod
     def getanimationinfo():
