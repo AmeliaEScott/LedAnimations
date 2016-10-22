@@ -39,12 +39,14 @@ class LedSupervisor(Thread):
                          wraparound=settings["strip_settings"]["wraparound"])
 
         framelength = 1 / settings["misc"]["framerate"]
+        starttime = time.time()
         while self.running:
+            previoustime = starttime
             starttime = time.time()
             # print("Calling self.strip.show()")
             try:
                 for anim in self.animations:
-                    self.animations[anim].animate(delta=1, strip=strip)
+                    self.animations[anim].animate(delta=starttime - previoustime, strip=strip)
                 strip.show()
                 strip.clear()
                 delay = framelength - (time.time() - starttime)
