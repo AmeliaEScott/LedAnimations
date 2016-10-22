@@ -43,7 +43,7 @@ def getanimations(request):
 def addanimation(request):
     if request.method.lower() != "post":
         return HttpResponse("Method not supported. Must use POST.", status=403)
-    
+
     # try:
     data = json.loads(request.body.decode("utf-8"))
     animationdata = data['data']

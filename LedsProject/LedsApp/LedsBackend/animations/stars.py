@@ -19,7 +19,7 @@ class Stars(Animation):
                         done = 0
             self.curTime = 0
             self.duration = (random.random() * (starMaxDuration - starMinDuration)) + starMinDuration
-            print("Duration: " + str(self.duration))
+            # print("Duration: " + str(self.duration))
             self.red = color[0]
             self.green = color[1]
             self.blue = color[2]
@@ -37,7 +37,7 @@ class Stars(Animation):
         for i in range(self.starCount):
             self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc,
                                            self.starMinDuration, self.starMaxDuration))
-            print("Adding star " + str(i))
+            # print("Adding star " + str(i))
         
     def animate(self, delta, strip):
         # print "Length: " + str(len(self.theStars))
