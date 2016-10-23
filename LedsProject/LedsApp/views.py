@@ -17,6 +17,7 @@ print("Done initializing LED supervisor.")
 def index(request):
     context = {
         'animationoptionsjson': json.dumps(ledSupervisor.getanimationoptions()),
+        'animationsjson': json.dumps(ledSupervisor.getanimationsjson()),
         'animationoptions': ledSupervisor.getanimationoptions()
     }
     # ledSupervisor.addanimation('Fairy', {'start': 1, 'width': 5, 'speed': 2, 'color': (255, 0, 0)})
@@ -29,20 +30,13 @@ def getanimationoptions(request):
 
 
 def getanimations(request):
-    animations = ledSupervisor.getanimations()
-    output = {}
-    for id in animations:
-        output[id] = {
-            "name": animations[id].getanimationinfo()['name'],
-            "options": animations[id].options
-        }
-    return JsonResponse(output)
+    return JsonResponse(ledSupervisor.getanimationsjson())
 
 
 @csrf_exempt
 def addanimation(request):
-    if request.method.lower() != "post":
-        return HttpResponse("Method not supported. Must use POST.", status=403)
+    if request.method.lower() != "put":
+        return HttpResponse("Method not supported. Must use PUT.", status=403)
 
     # try:
     data = json.loads(request.body.decode("utf-8"))
@@ -50,8 +44,11 @@ def addanimation(request):
     name = data['name']
     # except:
     #     return HttpResponse("Could not load animation data", status=404)
-    ledSupervisor.addanimation(name, animationdata)
-    return HttpResponse("Successfully added animation.", status=200)
+    result = ledSupervisor.addanimation(name, animationdata)
+    if result is None:
+        return HttpResponse("No animation found with that name.", status=400)
+    else:
+        return JsonResponse(result, status=200)
 
 
 @csrf_exempt

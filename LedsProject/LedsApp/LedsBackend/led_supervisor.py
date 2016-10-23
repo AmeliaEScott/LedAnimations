@@ -66,9 +66,25 @@ class LedSupervisor(Thread):
             if clazz.getanimationinfo()['name'] == name:
                 self.animations[self.maxid] = clazz(self.maxid, options)
                 self.maxid += 1
+                return {
+                    "name": name,
+                    "options": self.animations[self.maxid - 1].tojson(),
+                    "id": self.maxid - 1
+                }
+        return None
 
     def getanimations(self):
         return self.animations
+
+    def getanimationsjson(self):
+        output = {}
+        for id in self.animations:
+            output[id] = {
+                "name": self.animations[id].getanimationinfo()['name'],
+                "options": self.animations[id].options,
+                "id": id
+            }
+        return output
 
     def removeanimation(self, id):
         del self.animations[id]
@@ -83,8 +99,8 @@ class LedSupervisor(Thread):
             # print(repr(clazz))
             # print(repr(clazz.getanimationinfo()))
             classinfo = clazz.getanimationinfo()
-            classinfo['parameters'] = []
+            classinfo['parameters'] = {}
             for param in clazz.getparams():
-                classinfo['parameters'].append(param.__dict__())
+                classinfo['parameters'][param.displayname] = param.__dict__()
             animations[clazz.getanimationinfo()['name']] = classinfo
         return animations

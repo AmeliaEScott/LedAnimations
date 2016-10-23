@@ -9,46 +9,73 @@
     <script src="{% static "LedsApp/libraries/jquery.min.js" %}"></script>
     <script src="{% static "LedsApp/libraries/bootstrap/js/bootstrap.min.js" %}"></script>
     <link rel="stylesheet" href="{% static "LedsApp/libraries/bootstrap/css/bootstrap.min.css" %}">
+
+    <script src="{% static "LedsApp/index.js" %}"></script>
 </head>
 <body>
 <script type="text/javascript">
     {% autoescape off %}
-    animationOptions = {{ animationoptionsjson }};
+        animationOptions = {{ animationoptionsjson }};
+        animations = {{ animationsjson }};
     {% endautoescape %}
 </script>
 
 <div class="container">
-    <a href="{% static "LedsApp/statictest.html" %}">WOW WHAT A LINK</a>
-    {% for key,value in animationoptions.items %}
-        <form>
-            <strong>Name: </strong> {{ value.name }} <br>
-            <strong>Description: </strong> {{ value.description }} <br>
-            {% for parameter in value.parameters %}
-                <div class="form-group">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#viewanimations">Current Animations</a> </li>
+        <li><a data-toggle="tab" href="#addanimations">Add Animation</a> </li>
+    </ul>
 
-                    <label>{{ parameter.displayname|title }}</label>
-                    {% if parameter.type == "string" %}
-                    <input type="text" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
-                    {% elif parameter.type == "float" %}
-                    <input type="number" step="any" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
-                    {% elif parameter.type == "integer" %}
-                    <input type="number" step="1" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
-                    {% elif parameter.type == "color" %}
-                    <input type="color" class="form-control" {% if parameter.default %} value="{{ parameter.default }}" {% endif %}>
-                    {%  endif %}
+    <div class="tab-content">
+        <div class="tab-pane active" id="viewanimations">
+            <h4>Current animations</h4>
+            <ul class="list-group" id="animationslist">
 
-                    {% if parameter.description %}
-                        <small>{{ parameter.description }}</small>
-                    {% endif %}
-
-                </div>
-            {% endfor %}
-        </form>
-
-        {% if not forloop.last %}
-        <hr>
-        {% endif %}
-    {% endfor %}
+            </ul>
+        </div>
+        <div class="tab-pane" id="addanimations">
+            <h4>New Animations</h4>
+            <ul class="list-group" id="newanimationslist">
+                {% for name, data in animationoptions.items %}
+                    <button class="list-group-item add-animation" type="button" data-animation="{{ name }}">
+                        <h4>{{ name }}</h4>
+                        {{ data.description }}
+                    </button>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="addAnimationModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Animation</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addAnimationForm">
+                    <div id="simpleParameters">
+
+                    </div>
+                    <div class="panel" id="advancedPanel">
+                        <div class="panel-heading">
+                            <button type="button" data-toggle="collapse" data-target="#advancedParameters" class="btn btn-sm btn-info">Advanced Options</button>
+                        </div>
+                        <div class="panel-body collapse" id="advancedParameters">
+                            Wow, such stuff!
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="addAnimationButton">Add Animation</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 </body>
 </html>

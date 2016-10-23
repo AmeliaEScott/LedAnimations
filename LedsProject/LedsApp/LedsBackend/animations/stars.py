@@ -62,7 +62,7 @@ class Stars(Animation):
     def getanimationinfo():
         return {
             "name": "Stars",
-            "descriptions": "Pretty twinkling stars"
+            "description": "Pretty twinkling stars"
         }
 
     @staticmethod

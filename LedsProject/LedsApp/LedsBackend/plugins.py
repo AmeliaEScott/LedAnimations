@@ -39,7 +39,7 @@ class Animation:
         """
         :return: A JSON String representing this animation in full detail.
         """
-        return json.dumps(self.options)
+        return self.options
 
     @staticmethod
     @abc.abstractclassmethod
