@@ -1,4 +1,5 @@
 from ..plugins import Animation, AnimationParameter
+import time
 
 
 class Fairy(Animation):
@@ -10,7 +11,7 @@ class Fairy(Animation):
         self.speed = options['speed']
         self.color = options['color']
 
-        self.tick = 0
+        self.tick = time.time()
 
     def animate(self, delta, strip):
         self.tick += delta

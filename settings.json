@@ -7,7 +7,8 @@
     "brightness": 255,
     "invert": false,
     "wraparound": true,
-    "powerlimit": 3
+    "powerlimit": 3,
+    "type": "RGB"
   },
   "misc": {
     "framerate": 30
