@@ -1,63 +1,51 @@
-import os
+import numpy as np
+import zmq
+import colorsys
 
 
 class LedStrip:
 
-    def __init__(self, pipe, length, wraparound=False, powerlimit=None):
+    def __init__(self, zmq_port, length, wraparound=False, power_limit=None):
 
         self.length = length
-
-        self.powerLimit = powerlimit
-        self.powerUsed = 0
-
+        self.power_limit = power_limit
         self.wraparound = wraparound
 
-        self.pixels = [0] * length
+        self.pixels = np.zeros([length, 3], dtype=np.float32)
 
-        self.pipe = pipe
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.PUB)
+        self.socket.bind("tcp://*:{}".format(zmq_port))
 
         print("Finished initializing LED strip")
 
-    def setPixelColor(self, index, color=None, rgb=None, alpha=255, rgba=None):
-        # print("Setting pixel color...")
-        if rgba is not None:
-            alpha = rgba[3]
-            rgb = rgba[0:3]
+    def set_pixel_color(self, index, rgb=None, rgba=None, hsv=None, hsva=None):
+        alpha = 1.0
 
-        if rgb is not None:
-            color = Color(rgb[0], rgb[1], rgb[2])
+        if hsv is not None:
+            rgb = colorsys.hsv_to_rgb(*hsv)
+
+        if hsva is not None:
+            rgb = colorsys.hsv_to_rgb(*hsv[0:3])
+            alpha = hsva[3]
+
+        if rgba is not None:
+            rgb = rgba[0:3]
+            alpha = rgba[3]
+
+        if rgb is None:
+            raise Exception("No color provided")
 
         if self.wraparound:
             index %= len(self.pixels)
-        else:
-            if index < 0 or index > len(self.pixels) - 1:
-                return
+        elif index < 0 or index > self.pixels.shape[0] - 1:
+            raise IndexError("Index {} is out of range (0, {})".format(index, self.pixels.shape[0] - 1))
 
-        if color is not None:
-            currentcolor = self.pixels[index]
-            newcolor = (currentcolor * (1 - (alpha / 255))) + (color * (alpha / 255))
-            self.pixels[index] = int(newcolor)
-        # print("Finished setting pixel color")
+        color = np.array(rgb, dtype=np.float32)
+        self.pixels[index] = (self.pixels[index] * (1 - alpha)) + alpha * color
 
     def show(self):
-        # print("Writing " + repr(self.pixels))
-        for pixel in self.pixels:
-            self.pipe.write(str(pixel) + " ")
-        self.pipe.write("\n")
-        self.pipe.flush()
+        self.socket.send(self.pixels)
 
     def clear(self):
-        self.pixels = [0] * self.length
-
-
-def Color(red, green, blue, white=0):
-    """
-    Convert the provided red, green, blue color to a 24-bit color value.
-    Each color component should be a value 0-255 where 0 is the lowest intensity
-    and 255 is the highest intensity.
-    """
-    return (white << 24) | (red << 16) | (green << 8) | blue
-
-
-def rgb(color):
-    return color & (255 << 16), color & (255 << 8), color & 255
+        self.pixels[:, :] = 0.0

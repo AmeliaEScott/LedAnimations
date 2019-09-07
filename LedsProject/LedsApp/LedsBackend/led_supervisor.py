@@ -1,15 +1,21 @@
-from ..LedsBackend.led_strip import LedStrip
-from .animations.__init__ import animationclasses
-from .plugins import Animation, AnimationParameter
+from .led_strip import LedStrip
+from .animation import animation_classes
+# This import is not unused. I need to import all of the animation modules to populate the 'animation_classes' list.
+from .animations import *
 from threading import Thread
 import time
 import os
 import json
 
+
+print("===animations===")
+print([cls.__name__ for cls in animation_classes])
+
+
 with open(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'settings.json')) as settingsfile:
     settings = json.load(settingsfile)
 
-PIPE_PATH = settings["pipe_name"]
+ZMQ_PORT = settings["zmq_port"]
 
 
 class LedSupervisor(Thread):
@@ -19,9 +25,6 @@ class LedSupervisor(Thread):
     """
 
     def __init__(self):
-        print("Within LED supervisor __init__ now")
-
-        print("successfully initialized LedStrip")
         self.animations = {}
         self.maxid = 0
         super().__init__()
@@ -30,12 +33,8 @@ class LedSupervisor(Thread):
 
     def run(self):
         time.sleep(5)
-        try:
-            os.mkfifo(PIPE_PATH)
-        except OSError:
-            print('OSError when opening pipe')
-        pipe = open(PIPE_PATH, 'w')
-        strip = LedStrip(pipe=pipe, length=settings["strip_settings"]["length"],
+
+        strip = LedStrip(ZMQ_PORT, length=settings["strip_settings"]["length"],
                          wraparound=settings["strip_settings"]["wraparound"])
 
         framelength = 1 / settings["misc"]["framerate"]
@@ -51,36 +50,31 @@ class LedSupervisor(Thread):
                 strip.clear()
                 delay = framelength - (time.time() - starttime)
                 if delay > 0:
-                    pass
                     time.sleep(delay)
-            except BrokenPipeError:
-                print("Pipe broke. Waiting 5 seconds and trying again.")
-                time.sleep(5)
             except RuntimeError:
                 print("Caught a runtime error in LedSupervisor. Probably because of multithreading, but who knows?")
                 time.sleep(0.01)
-            # time.sleep(1)
 
     def addanimation(self, name, options):
-        for clazz in animationclasses:
-            if clazz.getanimationinfo()['name'] == name:
-                self.animations[self.maxid] = clazz(self.maxid, options)
-                self.maxid += 1
-                return {
-                    "name": name,
-                    "options": self.animations[self.maxid - 1].tojson(),
-                    "id": self.maxid - 1
-                }
-        return None
+        try:
+            cls = next(filter(lambda x: x.name == name, animation_classes))
+        except StopIteration:
+            raise Exception("No animation found with name {}".format(name))
+
+        print(options)
+        new_animation = cls(id=self.maxid, **options)
+        self.animations[self.maxid] = new_animation
+        self.maxid += 1
+        return new_animation.as_dict()
 
     def getanimations(self):
         return self.animations
 
     def getanimationsjson(self):
         output = {}
-        for id in self.animations:
+        for id in sorted(self.animations.keys()):
             output[id] = {
-                "name": self.animations[id].getanimationinfo()['name'],
+                "name": self.animations[id].name,
                 "options": self.animations[id].options,
                 "id": id
             }
@@ -94,13 +88,6 @@ class LedSupervisor(Thread):
 
     @staticmethod
     def getanimationoptions():
-        animations = {}
-        for clazz in animationclasses:
-            # print(repr(clazz))
-            # print(repr(clazz.getanimationinfo()))
-            classinfo = clazz.getanimationinfo()
-            classinfo['parameters'] = {}
-            for param in clazz.getparams():
-                classinfo['parameters'][param.displayname] = param.__dict__()
-            animations[clazz.getanimationinfo()['name']] = classinfo
-        return animations
+        return {
+            cls.name: cls.metadata for cls in animation_classes
+        }

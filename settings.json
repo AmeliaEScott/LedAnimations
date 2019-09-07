@@ -11,7 +11,7 @@
     "type": "RGB"
   },
   "misc": {
-    "framerate": 30
+    "framerate": 1
   },
-  "pipe_name": "/Users/Timmy/git/LedAnimations/datapipe"
+  "zmq_port": 5581
 }

@@ -73,21 +73,22 @@ function buildAnimationModal(animationName){
                 '<input class="form-control parameter-input" data-parameter-name="' + parameterName + '" ';
 
             switch (parameter.type) {
-                case 'integer':
+                case 'INTEGER':
+                case 'POSITION':
                     html += 'type="number" step="1" ';
                     break;
-                case 'float':
+                case 'FLOAT':
                     html += 'type="number" step="any" ';
                     break;
-                case 'string':
+                case 'STRING':
                     html += 'type="text" ';
                     break;
-                case 'color':
+                case 'COLOR':
                     html += 'type="color" ';
                     break;
             }
 
-            if (parameter.type == 'integer' || parameter.type == 'float') {
+            if (parameter.type === 'INTEGER' || parameter.type === 'FLOAT') {
                 if (parameter.minimum) {
                     html += 'min="' + parameter.minimum + '" ';
                 }
@@ -131,11 +132,11 @@ function addAnimation(){
         var parameterName = input.data("parameter-name");
         var parameterType = input.attr("type");
         var value = input.val();
-        if(parameterType == 'number'){
+        if(parameterType === 'INTEGER' || parameterType === 'POSITION' || parameterType === 'FLOAT'){
             parameters[parameterName] = parseFloat(value);
-        }else if(parameterType == 'text'){
+        }else if(parameterType === 'STRING'){
             parameters[parameterName] = value;
-        }else if(parameterType == 'color'){
+        }else if(parameterType === 'COLOR'){
             parameters[parameterName] = hexToRgb(value);
         }
     });
