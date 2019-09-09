@@ -75,7 +75,6 @@ class Rainbow:
         self.tick += delta
         hue = self.tick * self.speed
         for i in range(self.start, self.end):
-            rgb = map(lambda x: int(x * 255), colorsys.hsv_to_rgb(hue, self.saturation, self.brightness))
+            rgb = colorsys.hsv_to_rgb(hue, self.saturation, self.brightness)
             strip.set_pixel_color(i, rgb=tuple(rgb))
             hue = (hue + 1 / self.length) % 1.0
-        return
