@@ -8,7 +8,7 @@ class Rainbow:
     start = AnimationParameter(
         'Beginning',
         description="Where the rainbow starts",
-        param_type=ParameterType.INTEGER,
+        param_type=ParameterType.POSITION,
         optional=False,
         minimum=0,
         order=1
@@ -16,7 +16,7 @@ class Rainbow:
     end = AnimationParameter(
         'End',
         description="Where the rainbow ends",
-        param_type=ParameterType.FLOAT,
+        param_type=ParameterType.POSITION,
         optional=False,
         minimum=0,
         order=2
