@@ -24,7 +24,7 @@
     {% endif %}
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 mb-3 mt-3">
             <div class="list-group">
                 {% for name, data in animationoptions.items %}
                     <a href="#" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#modal_{{ name }}">
@@ -35,6 +35,7 @@
         </div>
 
         <div class="col-md-6">
+            <h3>Current Animations</h3>
             <ul class="list-group">
                 {% for animation in animations %}
                 <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
@@ -60,6 +61,10 @@
                         </form>
                     </div>
                 </a>
+                {% empty %}
+                <li class="list-group-item">
+                    <span>There are currently no animations.</span>
+                </li>
                 {% endfor %}
             </ul>
         </div>
