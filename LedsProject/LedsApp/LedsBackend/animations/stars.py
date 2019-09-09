@@ -88,6 +88,10 @@ class Stars:
         self.color = color
         self.startloc = startloc
         self.endloc = endloc
+
+        # TODO: Find a better way to pass the strip settings to the animations
+        if self.endloc is None:
+            self.endloc = 100
         self.starMinDuration = starMinDuration
         self.starMaxDuration = starMaxDuration
         self.theStars = []
