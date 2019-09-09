@@ -66,11 +66,9 @@ strip.begin()
 two_fifty_five = np.ones([LED_COUNT, 3], np.float32) * 255
 
 while running:
-    result = socket.poll(500)
+    result = socket.poll(2000)
     if result == 0:
         continue
-    else:
-        print("Receiving a thing")
     msg = socket.recv(copy=False, )
 
     # Assume incoming data is numpy array of floats in range (0, 1)
@@ -86,5 +84,7 @@ while running:
     # TODO: Is there a more efficient way to copy over the colors? Probably
     for i in range(0, data_packed.shape[0]):
         strip.setPixelColor(i, data_packed[i])
+
+    strip.show()
 
 print("Done cleaning up!")
