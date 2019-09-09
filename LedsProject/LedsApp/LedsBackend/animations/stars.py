@@ -115,8 +115,8 @@ class Stars:
                 # print str(brightness)
                 star.curTime += delta
                 # self.strip.setPixelColorWithAlpha(star.loc, star.red, star.green, star.blue, brightness)
-                strip.set_pixel_color(star.loc, rgb=(int(star.red * brightness), int(star.green * brightness),
-                                                   int(star.blue * brightness)))
+                strip.set_pixel_color(star.loc, rgb=(star.red * brightness, star.green * brightness,
+                                                     star.blue * brightness))
         for star in toRemove:
             self.theStars.remove(star)
             self.theStars.append(self.Star(self, self.color, self.startloc, self.endloc,
