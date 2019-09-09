@@ -166,7 +166,7 @@ class Fire:
             for flicker in self.colorFlicker:
                 color += flicker[0] * math.cos(flicker[1] * self.flickerSpeed * (self.tick - timeDiff))
             color = color**self.colorExponent
-            red = int(brightness * 255)
-            green = int(brightness * (self.minGreen + color * (self.maxGreen - self.minGreen)))
+            red = brightness
+            green = brightness * (self.minGreen + color * (self.maxGreen - self.minGreen))
             strip.set_pixel_color(self.center + i, rgb=(red, green, 0))
             strip.set_pixel_color(self.center - i, rgb=(red, green, 0))
