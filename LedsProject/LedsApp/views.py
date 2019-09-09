@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 from .LedsBackend.led_supervisor import LedSupervisor
+from .LedsBackend.animation import animation_classes
 import json
 
 
@@ -14,47 +15,49 @@ ledSupervisor = LedSupervisor()
 print("Done initializing LED supervisor.")
 
 
-def index(request):
+def index(request, error=None):
+    print("CURRENT ANIMATIONS:")
+    print(ledSupervisor.getanimationsjson())
+
     context = {
-        'animationoptionsjson': json.dumps(ledSupervisor.getanimationoptions()),
-        'animationsjson': json.dumps(ledSupervisor.getanimationsjson()),
-        'animationoptions': ledSupervisor.getanimationoptions()
+        'animationoptions': ledSupervisor.getanimationoptions(),
+        'animations': ledSupervisor.getanimationsjson(),
+        'error': error
     }
-    # ledSupervisor.addanimation('Fairy', {'start': 1, 'width': 5, 'speed': 2, 'color': (255, 0, 0)})
-    return HttpResponse(render(context=context, request=request, template_name='LedsApp/index.html'))
-    # return HttpResponse(repr(ledSupervisor.getanimationoptions()))
+
+    return HttpResponse(render(context=context, request=request, template_name='LedsApp/indexv2.html'))
 
 
-def getanimationoptions(request):
-    return JsonResponse(ledSupervisor.getanimationoptions())
-
-
-def getanimations(request):
-    return JsonResponse(ledSupervisor.getanimationsjson())
-
-
-@csrf_exempt
 def addanimation(request):
-    if request.method.lower() != "put":
-        return HttpResponse("Method not supported. Must use PUT.", status=403)
+    error = None
+    if request.method == "POST":
+        form_data = dict(request.POST.copy())
+        animation_name = next(iter(form_data['animation_name']))
+        del form_data['animation_name']
+        del form_data['csrfmiddlewaretoken']
 
-    # try:
-    data = json.loads(request.body.decode("utf-8"))
-    animationdata = data['data']
-    name = data['name']
-    # except:
-    #     return HttpResponse("Could not load animation data", status=404)
-    result = ledSupervisor.addanimation(name, animationdata)
-    if result is None:
-        return HttpResponse("No animation found with that name.", status=400)
+        animation_data = {
+            name: next(iter(value)) for name, value in form_data.items()
+        }
+
+        try:
+            ledSupervisor.addanimation(animation_name, animation_data)
+        except Exception as e:
+            error = str(e)
+
+        # TODO: How to show the error
+        # Use session: https://docs.djangoproject.com/en/2.2/topics/http/sessions/
+        return redirect("index")
     else:
-        return JsonResponse(result, status=200)
+        return HttpResponse("Method not supported. Should use POST.", 405)
 
 
 @csrf_exempt
-def removeanimation(request, id):
-    if request.method.lower() == "delete":
+def removeanimation(request):
+    if request.method.lower() == "post":
+        id = next(iter(request.POST['id']))
         ledSupervisor.removeanimation(int(id))
-        return HttpResponse("Successfully deleted animation.", status=200)
+        # TODO: Possible error code, probably using session
+        return redirect("index")
     else:
-        return HttpResponse("Method not supported. Must use DELETE", status=403)
+        return HttpResponse("Method not supported. Must use POST. You used {}".format(request.method), status=403)

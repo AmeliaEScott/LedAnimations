@@ -18,8 +18,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index),
-    url(r'^getanimations$', views.getanimations),
-    url(r'^addanimation$', views.addanimation),
-    url(r'^removeanimation/(?P<id>[0-9]+)$', views.removeanimation)
+    url(r'^$', views.index, name="index"),
+    url(r'^addanimation$', views.addanimation, name="addanimation"),
+    url(r'^removeanimation', views.removeanimation, name="removeanimation")
 ]

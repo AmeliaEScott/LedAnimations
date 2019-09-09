@@ -4,6 +4,7 @@ import json
 
 animation_classes = []
 
+
 def animation(animation_display_name, animation_description):
     def animation(animation_class):
 
@@ -18,6 +19,7 @@ def animation(animation_display_name, animation_description):
                 obj = getattr(animation_class, name)
                 if type(obj) == AnimationParameter:
                     params[name] = obj
+                    obj.name = name
 
         print(params)
 
@@ -31,9 +33,8 @@ def animation(animation_display_name, animation_description):
                 'name': name,
                 'displayname': display_name,
                 'description': description,
-                'parameters': {
-                    name: param.as_dict() for name, param in parameters.items()
-                }
+                'parameters': list(sorted([param.as_dict() for param in parameters.values()],
+                                          key=lambda x: x['order']))
             }
 
             def __init__(self, *args, **kwargs):
@@ -60,8 +61,9 @@ def animation(animation_display_name, animation_description):
             def as_dict(self):
                 return {
                     'name': NewAnimation.name,
-                    'display_name': NewAnimation.display_name,
+                    'displayname': NewAnimation.display_name,
                     'description': NewAnimation.description,
+                    'id': self.id,
                     'parameters': {
                         name: getattr(self.instance, name) for name in NewAnimation.parameters.keys()
                     }
@@ -117,7 +119,8 @@ class AnimationParameter:
             optional: bool = False,
             advanced: bool = False,
             minimum=None,
-            maximum=None
+            maximum=None,
+            order: int = 10000000
     ):
         """
         :param displayname: String that will be shown to the user on the UI
@@ -137,12 +140,14 @@ class AnimationParameter:
         self.advanced = advanced
         self.minimum = minimum
         self.maximum = maximum
+        self.order = order
 
     def __repr__(self):
         return repr(self.as_dict())
 
     def as_dict(self):
         return {
+            'name': self.name,
             'description': self.description,
             'displayname': self.displayname,
             'type': self.param_type.name,
@@ -150,7 +155,8 @@ class AnimationParameter:
             'optional': self.optional,
             'advanced': self.advanced,
             'minimum': self.minimum,
-            'maximum': self.maximum
+            'maximum': self.maximum,
+            'order': self.order
         }
 
     def validate(self, value):
@@ -168,7 +174,7 @@ class AnimationParameter:
         if self.param_type == ParameterType.INTEGER or self.param_type == ParameterType.POSITION:
             # TODO: Treat POSITION parameters special
             try:
-                valid = int(value) == value
+                valid = int(value) == float(value)
                 value = int(value)
             except ValueError:
                 valid = False
@@ -184,6 +190,16 @@ class AnimationParameter:
                     self.displayname, value
                 ))
         elif self.param_type == ParameterType.COLOR:
+            if type(value) == str:
+                print(value)
+                if value.startswith("#"):
+                    value = value[1:]
+                l = len(value) // 3
+                value = list(map(
+                    lambda x: int(x, base=16),
+                    [value[i:i+l] for i in range(0, len(value), l)]
+                ))
+
             if len(value) != 3:
                 raise ParameterError("'{}' should be a tuple of 3 integers, but you gave {}.".format(
                     self.displayname, value

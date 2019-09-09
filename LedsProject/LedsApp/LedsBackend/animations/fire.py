@@ -2,6 +2,7 @@
 # import random
 # import math
 # import json
+# from ..animation import animation, AnimationParameter, ParameterType
 #
 # DEFAULT_NUM_COSINES = 6
 # DEFAULT_FLICKER_SPEED = 30
@@ -13,7 +14,30 @@
 # DEFAULT_MAX_GREEN = 100
 #
 #
+# @animation("Flickery Fire", "Nice flickery boi")
 # class Fire:
+#         maxBrightness = AnimationParameter("Max Brightness", description="Maximum brightness, on scale of 0 to 1",
+#                            type="float", default=1.0, optional=True, minimum=0, maximum=1)
+#         AnimationParameter("Center", description="Location of center of fire on the LED strip",
+#                            type="integer", optional=False)
+#         AnimationParameter("Minimum Width", type="float", optional=False, minimum=0)
+#         AnimationParameter("Maximum Width", type="float", optional=True, default=0, minimum=0)
+#         AnimationParameter("Number of Cosines", type="integer", default=DEFAULT_NUM_COSINES,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Flicker Speed", type="float", default=DEFAULT_NUM_COSINES,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Propogation Speed", type="float", default=DEFAULT_PROPAGATION_SPEED,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Brightness Flicker Speed", type="float", default=DEFAULT_BRIGHTNESS_FLICKER_SPEED,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Brightness Exponent", type="float", default=DEFAULT_BRIGHTNESS_EXPONENT,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Color Exponent", type="float", default=DEFAULT_COLOR_EXPONENT,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Minimum Green", type="integer", default=DEFAULT_MIN_GREEN,
+#                            optional=True, advanced=True)
+#         AnimationParameter("Maximum Green", type="integer", default=DEFAULT_MAX_GREEN,
+#                            optional=True, advanced=True)
 #
 #     def __init__(self, id, options):
 #         super().__init__(id, options)
@@ -80,27 +104,4 @@
 #
 #     @staticmethod
 #     def getparams():
-#         return [
-#             AnimationParameter("Max Brightness", description="Maximum brightness, on scale of 0 to 1",
-#                                type="float", default=1.0, optional=True, minimum=0, maximum=1),
-#             AnimationParameter("Center", description="Location of center of fire on the LED strip",
-#                                type="integer", optional=False),
-#             AnimationParameter("Minimum Width", type="float", optional=False, minimum=0),
-#             AnimationParameter("Maximum Width", type="float", optional=True, default=0, minimum=0),
-#             AnimationParameter("Number of Cosines", type="integer", default=DEFAULT_NUM_COSINES,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Flicker Speed", type="float", default=DEFAULT_NUM_COSINES,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Propogation Speed", type="float", default=DEFAULT_PROPAGATION_SPEED,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Brightness Flicker Speed", type="float", default=DEFAULT_BRIGHTNESS_FLICKER_SPEED,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Brightness Exponent", type="float", default=DEFAULT_BRIGHTNESS_EXPONENT,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Color Exponent", type="float", default=DEFAULT_COLOR_EXPONENT,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Minimum Green", type="integer", default=DEFAULT_MIN_GREEN,
-#                                optional=True, advanced=True),
-#             AnimationParameter("Maximum Green", type="integer", default=DEFAULT_MAX_GREEN,
-#                                optional=True, advanced=True)
-#         ]
+#

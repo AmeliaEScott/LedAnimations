@@ -5,13 +5,17 @@ import time
 @animation("Fairy", "A light that constantly moves around")
 class Fairy:
     start = AnimationParameter('Offset', description="Location at which this fairy starts",
-                               param_type=ParameterType.POSITION, default=0, optional=True)
-    width = AnimationParameter('width', description="Width of the fairy, in number of pixels",
-                               param_type=ParameterType.INTEGER, optional=False)
-    speed = AnimationParameter('speed', description="Speed of movement, in pixels per second",
-                               param_type=ParameterType.FLOAT, optional=False)
-    color = AnimationParameter('color', description='Color of the fairy',
-                               param_type=ParameterType.COLOR, optional=False)
+                               param_type=ParameterType.POSITION, default=0, optional=True,
+                               order=1)
+    width = AnimationParameter('Width', description="Width of the fairy, in number of pixels",
+                               param_type=ParameterType.INTEGER, optional=False,
+                               order=2)
+    speed = AnimationParameter('Speed', description="Speed of movement, in pixels per second",
+                               param_type=ParameterType.FLOAT, optional=False,
+                               order=3)
+    color = AnimationParameter('Color', description='Color of the fairy',
+                               param_type=ParameterType.COLOR, optional=False,
+                               order=4)
 
     def __init__(self, start, width, speed, color):
         print("MY COLOR IS ({}): {}".format(type(color), color))
@@ -30,16 +34,3 @@ class Fairy:
         for i in range(1, self.width):
             strip.set_pixel_color(dist + i, rgb=self.color)
         strip.set_pixel_color(dist + self.width, rgba=self.color + (fraction,))
-
-    @staticmethod
-    def getparams():
-        return [
-
-        ]
-
-    @staticmethod
-    def getanimationinfo():
-        return {
-            'name': 'Fairy',
-            'description': 'A light that moves continously around the LED strip'
-        }

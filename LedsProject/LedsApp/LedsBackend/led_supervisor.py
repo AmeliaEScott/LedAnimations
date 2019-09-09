@@ -8,10 +8,6 @@ import os
 import json
 
 
-print("===animations===")
-print([cls.__name__ for cls in animation_classes])
-
-
 with open(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'settings.json')) as settingsfile:
     settings = json.load(settingsfile)
 
@@ -59,6 +55,7 @@ class LedSupervisor(Thread):
         try:
             cls = next(filter(lambda x: x.name == name, animation_classes))
         except StopIteration:
+            print("Everything is broken")
             raise Exception("No animation found with name {}".format(name))
 
         print(options)
@@ -67,17 +64,8 @@ class LedSupervisor(Thread):
         self.maxid += 1
         return new_animation.as_dict()
 
-    def getanimations(self):
-        return self.animations
-
     def getanimationsjson(self):
-        output = {}
-        for id in sorted(self.animations.keys()):
-            output[id] = {
-                "name": self.animations[id].name,
-                "options": self.animations[id].options,
-                "id": id
-            }
+        output = list(map(lambda x: x.as_dict(), sorted(self.animations.values(), key=lambda x: x.id)))
         return output
 
     def removeanimation(self, id):
