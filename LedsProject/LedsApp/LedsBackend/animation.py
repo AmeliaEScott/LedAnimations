@@ -21,8 +21,6 @@ def animation(animation_display_name, animation_description):
                     params[name] = obj
                     obj.name = name
 
-        print(params)
-
         class NewAnimation:
 
             parameters = params
@@ -40,7 +38,6 @@ def animation(animation_display_name, animation_description):
             def __init__(self, *args, **kwargs):
                 self.id = kwargs['id']
                 del kwargs['id']
-                print("My kwargs are: {}".format(kwargs))
                 # Validate parameters
                 for param_name, param_metadata in NewAnimation.parameters.items():
                     if param_name not in kwargs:
@@ -50,7 +47,6 @@ def animation(animation_display_name, animation_description):
                 self.instance = animation_class(*args, **kwargs)
                 self.total_time = 0
 
-
             def time_animation(self, *args, **kwargs):
                 start = time.time()
                 retval = self.instance.animate(*args, **kwargs)
@@ -59,15 +55,13 @@ def animation(animation_display_name, animation_description):
                 return retval
 
             def as_dict(self):
-                return {
-                    'name': NewAnimation.name,
-                    'displayname': NewAnimation.display_name,
-                    'description': NewAnimation.description,
-                    'id': self.id,
-                    'parameters': {
-                        name: getattr(self.instance, name) for name in NewAnimation.parameters.keys()
-                    }
-                }
+                data = NewAnimation.metadata.copy()
+                data['id'] = self.id
+
+                for param_data in data['parameters']:
+                    param_data['value'] = getattr(self.instance, param_data['name'], None)
+
+                return data
 
             def __getattribute__(self, s):
                 """
@@ -105,7 +99,9 @@ class ParameterType(Enum):
     FLOAT = 2,
     COLOR = 3,
     POSITION = 4,
-    STRING = 5
+    STRING = 5,
+    # TODO: Add EXTENT option
+    # EXTENT = 6,
 
 
 class AnimationParameter:
@@ -160,15 +156,20 @@ class AnimationParameter:
         }
 
     def validate(self, value):
-        print("Validating {}: {}".format(self.displayname, value))
         # Get default value
+        if self.param_type != ParameterType.STRING and value == '':
+            value = None
+
         if value is None:
             if not self.optional:
                 raise ParameterError("'{}' is a required parameter, but was not provided.".format(
                     self.displayname
                 ))
-            else:
+            elif self.default is not None:
                 value = self.default
+            else:
+                # No value was provided. But it's optional. But there's no default. So just accept it and return None.
+                return None
 
         # Validate type
         if self.param_type == ParameterType.INTEGER or self.param_type == ParameterType.POSITION:
@@ -191,7 +192,6 @@ class AnimationParameter:
                 ))
         elif self.param_type == ParameterType.COLOR:
             if type(value) == str:
-                print(value)
                 if value.startswith("#"):
                     value = value[1:]
                 l = len(value) // 3

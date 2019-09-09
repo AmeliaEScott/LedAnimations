@@ -1,27 +1,69 @@
 from ..animation import animation, AnimationParameter, ParameterType
-import time
 import colorsys
 
-@animation("Cool Rainbow", "It's nice...")
-class Rainbow:
-    start = AnimationParameter('start', description="Where the rainbow starts",
-                       param_type=ParameterType.INTEGER, optional=False)
-    end = AnimationParameter('end', description="Where the rainbow ends",
-                       param_type=ParameterType.FLOAT, optional=False)
-    length = AnimationParameter('length',
-                       description="The rainbow will make one trip around the color wheel in this length",
-                       param_type=ParameterType.INTEGER, optional=False)
-    speed = AnimationParameter('speed', description='How fast to move the colors',
-                       param_type=ParameterType.FLOAT, optional=False, default=0)
-    brightness = AnimationParameter('brightness', description="Brightness of the whole rainbow (0 to 1)",
-                       param_type=ParameterType.FLOAT, default=1, optional=False, minimum=0, maximum=1)
-    saturation = AnimationParameter('saturation', description='Saturation (0 to 1)', advanced=True, default=1,
-                                    param_type=ParameterType.FLOAT)
 
+@animation("Rainbow", "Rainbow that optionally moves")
+class Rainbow:
+    # TODO: Change to ParameterType.EXTENT
+    start = AnimationParameter(
+        'Beginning',
+        description="Where the rainbow starts",
+        param_type=ParameterType.INTEGER,
+        optional=False,
+        minimum=0,
+        order=1
+    )
+    end = AnimationParameter(
+        'End',
+        description="Where the rainbow ends",
+        param_type=ParameterType.FLOAT,
+        optional=False,
+        minimum=0,
+        order=2
+    )
+    length = AnimationParameter(
+        'Scale',
+        description="The rainbow will make one trip around the color wheel in this length",
+        param_type=ParameterType.INTEGER,
+        optional=True,
+        advanced=True,
+        minimum=0,
+        order=3
+    )
+    speed = AnimationParameter(
+        'Speed',
+        description='How fast to move the colors, in pixels / second',
+        param_type=ParameterType.FLOAT,
+        optional=True,
+        default=0,
+        order=4
+    )
+    brightness = AnimationParameter(
+        'Brightness',
+        description="Brightness of the whole rainbow (0 to 1)",
+        param_type=ParameterType.FLOAT,
+        default=1,
+        optional=False,
+        minimum=0,
+        maximum=1,
+        order=5
+    )
+    saturation = AnimationParameter(
+        'Saturation',
+        description='Saturation (0 to 1)',
+        advanced=True,
+        default=1,
+        param_type=ParameterType.FLOAT,
+        minimum=0,
+        maximum=1,
+        order=6
+    )
 
     def __init__(self, start, end, length, speed, brightness, saturation):
         self.start = start
         self.end = end
+        if length is None:
+            length = end - start
         self.length = length
         self.speed = speed
         self.brightness = brightness

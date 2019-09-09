@@ -1,81 +1,179 @@
 {% load static %}
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
     <title>LED Controls</title>
-
-    <script src="{% static "LedsApp/libraries/jquery.min.js" %}"></script>
-    <script src="{% static "LedsApp/libraries/bootstrap/js/bootstrap.min.js" %}"></script>
-    <link rel="stylesheet" href="{% static "LedsApp/libraries/bootstrap/css/bootstrap.min.css" %}">
-
-    <script src="{% static "LedsApp/index.js" %}"></script>
 </head>
 <body>
-<script type="text/javascript">
-    {% autoescape off %}
-        animationOptions = {{ animationoptionsjson }};
-        animations = {{ animationsjson }};
-    {% endautoescape %}
-</script>
-
 <div class="container">
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#viewanimations">Current Animations</a> </li>
-        <li><a data-toggle="tab" href="#addanimations">Add Animation</a> </li>
-    </ul>
+    {% if error %}
+    <div class="alert alert-danger alert-dismissable fade show" role="alert">
+        <span>{{ error }}</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
 
-    <div class="tab-content">
-        <div class="tab-pane active" id="viewanimations">
-            <h4>Current animations</h4>
-            <ul class="list-group" id="animationslist">
-
-            </ul>
-        </div>
-        <div class="tab-pane" id="addanimations">
-            <h4>New Animations</h4>
-            <ul class="list-group" id="newanimationslist">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="list-group">
                 {% for name, data in animationoptions.items %}
-                    <button class="list-group-item add-animation" type="button" data-animation="{{ name }}">
-                        <h4>{{ name }}</h4>
-                        {{ data.description }}
-                    </button>
+                    <a href="#" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#modal_{{ name }}">
+                        {{ data.displayname }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <ul class="list-group">
+                {% for animation in animations %}
+                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ animation.displayname }}</h5>
+                        <small>{{ animation.id }}</small>
+                    </div>
+
+                    <div class="d-flex w-100 justify-content-between">
+                        <small class="text-muted">
+                            <ul>
+                                {% for param_data in animation.parameters %}
+                                {% if not param_data.advanced and param_data.value is not None %}
+                                <li>{{ param_data.displayname }}: {{ param_data.value }}</li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </small>
+
+                        <form action="/removeanimation" method="post">
+                            <input type="hidden" name="id" value="{{ animation.id }}">
+                            <button type="submit" class="btn btn-sm btn-danger">&times;</button>
+                        </form>
+                    </div>
+                </a>
                 {% endfor %}
             </ul>
         </div>
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="addAnimationModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add Animation</h4>
-            </div>
-            <div class="modal-body">
-                <form id="addAnimationForm">
-                    <div id="simpleParameters">
 
-                    </div>
-                    <div class="panel" id="advancedPanel">
-                        <div class="panel-heading">
-                            <button type="button" data-toggle="collapse" data-target="#advancedParameters" class="btn btn-sm btn-info">Advanced Options</button>
+
+<!--
+Create a separate modal for each animation type.
+Each modal will have a separate form with all of the parameters.
+-->
+{% for anim_name, data in animationoptions.items %}
+    <div class="modal add-animation-modal" tabindex="-1" role="dialog" id="modal_{{ anim_name }}">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add {{ data.displayname }} animation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form_{{ anim_name }}" action="addanimation" method="post">
+                    {% for param_data in data.parameters %}
+                        <div
+                        {% if not param_data.advanced %}
+                            class="form-group"
+                        {% else %}
+                            class="form-group collapse {{ anim_name }}-advanced-option"
+                        {% endif %}
+                        >
+                            <label for="{{ anim_name }}_{{ param_data.name }}">{{ param_data.displayname }}</label>
+                            <input id="{{ anim_name }}_{{ param_data.name }}" name="{{ param_data.name }}"
+                                   placeholder="{{ param_data.displayname }}"
+                            {% if param_data.type == "INTEGER" %}
+                                    class="form-control" type="number"
+                            {% elif param_data.type == "POSITION" %}
+                                    class="form-control" type="number"
+                            {% elif param_data.type == "FLOAT" %}
+                               {% if param_data.minimum is not None and param_data.maximum is not None %}
+                                   class="form-control-range" type="range" step="any"
+                               {% else %}
+                                   class="form-control" type="number" step="any"
+                               {% endif %}
+                            {% elif param_data.type == "COLOR" %}
+                                   class="form-control jscolor {zIndex:9999}" type="color"
+                            {% elif param_data.type == "STRING" %}
+                                   class="form-control" type="text"
+                            {% endif %}
+
+                            {% if param_data.minimum is not None %}
+                                   min="{{ param_data.minimum }}"
+                            {% endif %}
+                            {% if param_data.maximum is not None %}
+                                    max="{{ param_data.maximum }}"
+                            {% endif %}
+                            {% if param_data.default is not None %}
+                                    value="{{ param_data.default }}"
+                            {% endif %}
+                            {% if not param_data.optional %}
+                                    required
+                            {% endif %}
+                                />
+                            <div class="invalid-feedback">
+                                {% if param_data.minimum is not None and param_data.maximum is None %}
+                                    Must be greater than {{ param_data.minimum }}.
+                                {% elif param_data.minimum is None and param_data.maximum is not None  %}
+                                    Must be less than {{ param_data.maximum }}.
+                                {% elif param_data.minimum is not None and param_data.maximum is not None %}
+                                    Must be between {{ param_data.minimum }} and {{ param_data.maximum }}.
+                                {% else %}
+                                    Required.
+                                {% endif %}
+                            </div>
+                            <small id="{{ anim_name }}_{{ param_data.name }}_help" class="form-text text-muted">
+                                {{ param_data.description }}
+                            </small>
                         </div>
-                        <div class="panel-body collapse" id="advancedParameters">
-                            Wow, such stuff!
-                        </div>
+                    {% endfor %}
+
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target=".{{ anim_name }}-advanced-option">
+                            Toggle advanced options
+                        </button>
                     </div>
-                </form>
+
+                    <div class="form-group">
+                        <input type="hidden" value="{{ data.name }}" name="animation_name" />
+                    </div>
+
+                    {% csrf_token %}
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <!-- TODO: Save -->
+                    <button type="submit" class="btn btn-primary add-animation-button" form="form_{{ anim_name }}">Add Animation</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="addAnimationButton">Add Animation</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+    </div>
+{% endfor %}
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="{% static "LedsApp/libraries/jscolor.js" %}"></script>
+
+<script src="{% static "LedsApp/index.js" %}"></script>
+
 </body>
 </html>

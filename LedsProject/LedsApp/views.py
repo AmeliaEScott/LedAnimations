@@ -15,9 +15,15 @@ ledSupervisor = LedSupervisor()
 print("Done initializing LED supervisor.")
 
 
-def index(request, error=None):
+def index(request):
     print("CURRENT ANIMATIONS:")
     print(ledSupervisor.getanimationsjson())
+
+    if 'error' in request.session:
+        error = request.session['error']
+        del request.session['error']
+    else:
+        error = None
 
     context = {
         'animationoptions': ledSupervisor.getanimationoptions(),
@@ -25,7 +31,7 @@ def index(request, error=None):
         'error': error
     }
 
-    return HttpResponse(render(context=context, request=request, template_name='LedsApp/indexv2.html'))
+    return HttpResponse(render(context=context, request=request, template_name='LedsApp/index.html'))
 
 
 def addanimation(request):
@@ -47,6 +53,7 @@ def addanimation(request):
 
         # TODO: How to show the error
         # Use session: https://docs.djangoproject.com/en/2.2/topics/http/sessions/
+        request.session['error'] = error
         return redirect("index")
     else:
         return HttpResponse("Method not supported. Should use POST.", 405)
