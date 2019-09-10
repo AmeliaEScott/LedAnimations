@@ -62,7 +62,7 @@ def addanimation(request):
 @csrf_exempt
 def removeanimation(request):
     if request.method.lower() == "post":
-        id = next(iter(request.POST['id']))
+        id = request.POST['id']
         ledSupervisor.removeanimation(int(id))
         # TODO: Possible error code, probably using session
         return redirect("index")
